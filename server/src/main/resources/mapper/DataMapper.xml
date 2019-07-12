@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.northbr.server.mapper.DataMapper">
+	
+  
+	<select id="selectCategory" resultType="Map">
+		SELECT
+			id,
+      name
+		FROM category
+    ORDER BY id
+	</select>
+
+  <select id="selectType" resultType="Map">
+    SELECT
+      id,
+      name
+    FROM type
+    ORDER BY id
+  </select>
+
+  <insert id="insertImageFile" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO image
+    (
+      name,
+      size,
+      image,
+      type,
+      reg_dtime
+    )
+    VALUES
+    <foreach collection="list" item="item" open="(" close=")" separator=",">
+        #{item.name},
+        #{item.size},
+        #{item.image},
+        #{item.type},
+        now()
+    </foreach>
+  </insert>
+</mapper>

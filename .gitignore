@@ -1,0 +1,38 @@
+/server/HELP.md
+/server/.gradle
+/server/build/
+!/server/gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**
+!**/src/test/**
+
+### STS ###
+/server/.apt_generated
+/server/.classpath
+/server/.factorypath
+/server/.project
+/server/.settings
+/server/.springBeans
+/server/.sts4-cache
+
+### IntelliJ IDEA ###
+/server/.idea
+/server/*.iws
+/server/*.iml
+/server/*.ipr
+/server/out/
+
+### NetBeans ###
+/server/nbproject/private/
+/server/nbbuild/
+/server/dist/
+/server/nbdist/
+/server/.nb-gradle/
+/server/bin
+
+### VS Code ###
+/server/.vscode/
+
+
+/proxy/node_modules
+
+/client/node_modules

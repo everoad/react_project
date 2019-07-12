@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.northbr.server.mapper.BoardMapper">
+	
+	<select id="selectBoardItems" resultType="BoardVo">
+		SELECT 
+      a.id,
+      b.name		                                    AS category,
+      c.name		                                    AS type,
+      title,
+      a.type,
+      d.image,
+      DATE_FORMAT(a.reg_dtime, '%Y-%m-%d %H:%i:%s') AS regDtime
+    FROM board a
+    JOIN category b
+    ON a.category = b.id
+    JOIN type c
+    ON a.type = c.id
+    LEFT JOIN image d
+    ON a.image_id = d.id
+    <where>
+      <if test='type != 0'>
+        a.type = #{type}
+      </if>
+    </where>
+    ORDER BY a.reg_dtime DESC
+	</select>
+
+  <select id="selectBoardItemsCount" resultType="int">
+    SELECT
+      COUNT(a.id)
+    FROM board a
+    JOIN category b
+    ON a.category = b.id
+    JOIN type c
+    ON a.type = c.id
+    <where>
+      <if test='type != 0'>
+        a.type = #{type}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectBoardItem" resultType="BoardVo">
+    SELECT 
+      a.id,
+      b.name		          AS category,
+      c.name		          AS type,
+      title,
+      description,
+      a.type,
+      d.image,
+      DATE_FORMAT(a.reg_dtime, '%Y-%m-%d %H:%i:%s') AS regDtime
+    FROM board a
+    JOIN category b
+    ON a.category = b.id
+    JOIN type c
+    ON a.type = c.id
+    LEFT JOIN image d
+    ON a.image_id = d.id
+    WHERE a.id = #{boardId}
+  </select>
+
+  <insert id="insertBoardItem">
+    INSERT INTO board
+    (
+      title,
+      description,
+      type,
+      category,
+      image_id,
+      reg_dtime
+    )
+    VALUES
+    (
+      #{title},
+      #{description},
+      #{type},
+      #{category},
+      #{imageId},
+      now()
+    )
+  </insert>
+</mapper>
