@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, use } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Home from "./views/Home";
 import { history } from "./utils/history";
 import { authRoutes } from "./routes";
@@ -20,14 +20,14 @@ function App({ dispatch }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const initializing = async () => {
+      await dispatch(await dataActions.getDefaultData());
+      await dispatch(await authActions.autoLogin());
+      setLoading(false);
+    };
+
     initializing();
   }, [dispatch]);
-
-  const initializing = async () => {
-    await dispatch(await dataActions.getDefaultData());
-    await dispatch(await authActions.autoLogin());
-    setLoading(false);
-  };
 
   return (
     <Fragment>

@@ -7,16 +7,17 @@ import DialogContent from "@material-ui/core/DialogContent";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import IconButton from "@material-ui/core/IconButton";
-import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
+import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+
+import "./FullScreenDialog.css";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
     position: "relative",
     backgroundImage: "linear-gradient(270deg,rgba(51,148,225,.18),transparent)",
     backgroundColor: "#584475"
-    //backgroundColor: theme.palette.common.white
   }
 }));
 
@@ -47,7 +48,17 @@ export default function FullScreenDialog({ open, handleClose, children }) {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <DialogContent>{children}</DialogContent>
+        <DialogContent>
+          <ReactCSSTransitionGroup
+            transitionName="content"
+            transitionAppear={true}
+            transitionEnterTimeout={300}
+            transitionLeaveTimeout={300}
+            transitionAppearTimeout={500}
+          >
+            {children}
+          </ReactCSSTransitionGroup>
+        </DialogContent>
       </Dialog>
     </div>
   );

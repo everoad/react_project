@@ -6,13 +6,42 @@ public class BoardVo {
   private String title;
   private String description;
   private String category;
+  private int categoryId;
   private String type;
+  private int typeId;
   private String regDtime;
   private int imageId;
   private byte[] image;
+  private int imageSize;
+  private String imageName;
+  private String imageType;
 
   public int getId() {
     return id;
+  }
+
+  public String getImageType() {
+    return imageType;
+  }
+
+  public void setImageType(String imageType) {
+    this.imageType = imageType;
+  }
+
+  public String getImageName() {
+    return imageName;
+  }
+
+  public void setImageName(String imageName) {
+    this.imageName = imageName;
+  }
+
+  public int getImageSize() {
+    return imageSize;
+  }
+
+  public void setImageSize(int imageSize) {
+    this.imageSize = imageSize;
   }
 
   public byte[] getImage() {
@@ -21,6 +50,22 @@ public class BoardVo {
 
   public void setImage(byte[] image) {
     this.image = image;
+  }
+
+  public int getTypeId() {
+    return typeId;
+  }
+
+  public void setTypeId(int typeId) {
+    this.typeId = typeId;
+  }
+
+  public int getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(int categoryId) {
+    this.categoryId = categoryId;
   }
 
   public int getImageId() {

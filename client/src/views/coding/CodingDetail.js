@@ -5,6 +5,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import * as service from "../../services/board";
 
+import MarkdownText from "../../components/markdown/MarkdownText";
+
 const useStyles = makeStyles(theme => ({
   root: {
     padding: theme.spacing(3, 0, 3, 0),
@@ -28,25 +30,30 @@ const initItem = {
   title: "",
   description: "",
   regDtime: "",
-  category: 1,
-  type: 0,
+  category: "",
+  categoryId: 1,
+  type: "",
+  typeId: 0,
   imageId: -1,
-  image: ""
+  image: "",
+  imageName: "",
+  imageSize: 0,
+  imageType: ""
 };
 
-export default function CodingDetail({ id }) {
+export default function CodingDetail({ id, auth }) {
   const classes = useStyles();
 
   const [item, setItem] = useState(initItem);
 
   useEffect(() => {
-    getBoardItem();
-  }, []);
+    const getBoardItem = async () => {
+      const res = await service.getBoardItem("coding", { id });
+      setItem(res.data);
+    };
 
-  const getBoardItem = async () => {
-    const res = await service.getBoardItem("coding", { id });
-    setItem(res.data);
-  };
+    getBoardItem();
+  }, [id]);
 
   return (
     <div className={classes.root}>
@@ -58,13 +65,15 @@ export default function CodingDetail({ id }) {
           <img
             src={
               item.image
-                ? `data:image/jpg;base64,${item.image}`
+                ? `data:image/${item.imageType};base64,${item.image}`
                 : "/images/cover-2-lg.png"
             }
             className={classes.image}
+            alt={item.imageName}
+            title={item.imageName}
           />
           <div className={classes.content}>
-            <ReactMarkdown source={item.description} />
+            <MarkdownText value={item.description} />
           </div>
         </Fragment>
       )}

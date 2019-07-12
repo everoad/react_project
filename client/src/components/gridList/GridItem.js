@@ -1,10 +1,17 @@
-import React from "react";
+import React, { Fragment } from "react";
 import clsx from "clsx";
 
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 import { makeStyles } from "@material-ui/core/styles";
 import DateRangeIcon from "@material-ui/icons/DateRange";
+
+import Typography from "@material-ui/core/Typography";
+
+import { connect } from "react-redux";
 
 const useStyles = makeStyles(theme => ({
   hover: {
@@ -34,7 +41,7 @@ const useStyles = makeStyles(theme => ({
     width: "100%"
   },
   title: {
-    padding: theme.spacing(1),
+    padding: theme.spacing(2, 1, 1, 1),
     fontSize: "16px",
     fontWeight: 550,
     color: theme.palette.primary.main,
@@ -51,17 +58,24 @@ const useStyles = makeStyles(theme => ({
     color: "#505050"
   },
   footer: {
-    padding: theme.spacing(1),
-    textAlign: "right"
+    display: "flex",
+    justifyContent: "space-between",
+    padding: theme.spacing(1)
   }
 }));
 
-export default function GridItem(props) {
+function GridItem(props) {
   const classes = useStyles();
 
-  const { item, handleClickItem } = props;
+  const {
+    item,
+    handleClickItem,
+    auth,
+    handleClickEdit,
+    handleClickDelete
+  } = props;
 
-  const { image, type, title, regDtime } = item;
+  const { image, imageType, type, title, regDtime } = item;
 
   return (
     <div className={classes.root}>
@@ -72,7 +86,7 @@ export default function GridItem(props) {
             style={{
               background: `url(${
                 image
-                  ? `data:image/jpg;base64,${image}`
+                  ? `data:image/${imageType};base64,${image}`
                   : "/images/cover-2-lg.png"
               }) no-repeat center center`,
               backgroundSize: "cover"
@@ -81,18 +95,41 @@ export default function GridItem(props) {
           />
         </header>
         <div className={classes.body}>
-          <div className={classes.title} onClick={() => handleClickItem(item)}>
+          <Typography
+            variant="subtitle1"
+            noWrap={true}
+            className={classes.title}
+            onClick={() => handleClickItem(item)}
+          >
             <span>[ {type} ]</span>
             &nbsp;{title}
-          </div>
+          </Typography>
           <div className={classes.subTitle}>
-            <DateRangeIcon fontSize="small" />
+            <DateRangeIcon style={{ fontSize: "14px" }} />
             <div>
               &nbsp;
-              {regDtime ? regDtime : "2019-07-08"}
+              {regDtime}
             </div>
           </div>
           <div className={classes.footer}>
+            <div>
+              {auth.loggingIn && (
+                <Fragment>
+                  <IconButton
+                    size="small"
+                    onClick={() => handleClickEdit(item)}
+                  >
+                    <EditIcon style={{ fontSize: "18px" }} />
+                  </IconButton>
+                  <IconButton
+                    size="small"
+                    onClick={() => handleClickDelete(item)}
+                  >
+                    <DeleteIcon style={{ fontSize: "18px" }} />
+                  </IconButton>
+                </Fragment>
+              )}
+            </div>
             <Button
               size="small"
               variant="text"
@@ -107,3 +144,11 @@ export default function GridItem(props) {
     </div>
   );
 }
+
+const mapStateToProps = state => {
+  return {
+    auth: state.authentication
+  };
+};
+
+export default connect(mapStateToProps)(GridItem);

@@ -1,11 +1,12 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 
 import { connect } from "react-redux";
 
 import { makeStyles } from "@material-ui/core/styles";
 import IconButton from "@material-ui/core/IconButton";
-import CreateIcon from "@material-ui/icons/Create";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import Container from "@material-ui/core/Container";
+import TextField from "@material-ui/core/TextField";
 
 import FullScreenDialog from "../../components/dialog/FullScreenDialog";
 import DefaultDialog from "../../components/dialog/DefaultDialog";
@@ -29,6 +30,10 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(1),
     display: "flex",
     justifyContent: "space-between"
+  },
+  searchInput: {
+    marginRight: theme.spacing(1),
+    backgroundColor: theme.palette.common.white
   }
 }));
 
@@ -37,15 +42,20 @@ const initSelectedItem = {
   title: "",
   description: "",
   regDtime: "",
-  category: 1,
-  type: 0,
+  category: "",
+  categoryId: 1,
+  type: "",
+  typeId: 0,
   imageId: -1,
-  image: ""
+  image: "",
+  imageName: "",
+  imageSize: 0,
+  imageType: ""
 };
 
 const initSearch = {
-  type: 0,
-  page: 0
+  typeId: 0,
+  keyword: ""
 };
 
 function CodingList({ auth, defaultData }) {
@@ -58,28 +68,11 @@ function CodingList({ auth, defaultData }) {
 
   const [search, setSearch] = useState(initSearch);
 
-  const [item, setItem] = useState({
-    items: [],
-    itemCount: 0
-  });
+  const [refresh, setRefresh] = useState(false);
 
-  useEffect(() => {
-    getCodingItems();
-  }, [search.type]);
-
-  const getCodingItems = async () => {
-    const res = await service.getBoardItems("coding", search);
-    setItem(res.data);
-  };
-
-  const handleClickItem = item => {
-    setSelectedItem(item);
-    handleDetailOpen();
-  };
-
-  const handleClickEdit = () => {
-    setSelectedItem(initSelectedItem);
-    handleEditOpen();
+  const getCodingItems = async params => {
+    const res = await service.getBoardItems("coding", params);
+    return res.data;
   };
 
   const handleDetailOpen = () => setDetailOpen(true);
@@ -88,9 +81,23 @@ function CodingList({ auth, defaultData }) {
   const handleEditOpen = () => setEditOpen(true);
   const handleEditClose = () => setEditOpen(false);
 
+  const handleClickItem = item => {
+    setSelectedItem(item);
+    handleDetailOpen();
+  };
+
+  const handleClickEdit = (item = initSelectedItem) => {
+    setSelectedItem(item);
+    handleEditOpen();
+  };
+
   const handleClickSave = async () => {
-    const res = await service.addBoardItem(selectedItem);
-    getCodingItems();
+    if (selectedItem.id < 0) {
+      await service.addBoardItem(selectedItem);
+    } else {
+      await service.editBoardItem(selectedItem);
+    }
+    setRefresh(!refresh);
     handleEditClose();
   };
 
@@ -115,11 +122,24 @@ function CodingList({ auth, defaultData }) {
     });
   };
 
-  const handleChangeSearch = async e => {
+  const handleChangeSearch = e => {
     setSearch({
       ...search,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleKeyPressKeyword = e => {
+    if (e.charCode === 13) {
+      handleChangeSearch(e);
+    }
+  };
+
+  const handleClickDelete = async item => {
+    if (window.confirm("정말로 삭제하시겠습니까?")) {
+      await service.removeBoardItem(item);
+      setRefresh(!refresh);
+    }
   };
 
   const editDialogButtons = [{ text: "저장", handler: handleClickSave }];
@@ -127,33 +147,59 @@ function CodingList({ auth, defaultData }) {
   return (
     <Fragment>
       <div className={classes.header}>
-        <FormControl variant="outlined" margin="dense">
-          <InputLabel htmlFor="select-type">분류</InputLabel>
-          <Select
-            value={search.type}
-            onChange={handleChangeSearch}
-            input={
-              <OutlinedInput labelWidth={10} name="type" id="select-type" />
-            }
+        <div>
+          <FormControl
+            variant="outlined"
+            margin="dense"
+            className={classes.searchInput}
           >
-            <MenuItem value={0} selected>
-              전체
-            </MenuItem>
-            {defaultData.type.map((one, i) => (
-              <MenuItem key={i} value={one.id}>
-                {one.name}
+            <InputLabel htmlFor="select-type">분류</InputLabel>
+            <Select
+              value={search.typeId}
+              onChange={handleChangeSearch}
+              input={
+                <OutlinedInput labelWidth={34} name="typeId" id="select-type" />
+              }
+            >
+              <MenuItem value={0} selected>
+                전체
               </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+              {defaultData.type.map((one, i) => (
+                <MenuItem key={i} value={one.id}>
+                  {one.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <TextField
+            className={classes.searchInput}
+            onKeyPress={handleKeyPressKeyword}
+            label="검색"
+            name="keyword"
+            variant="outlined"
+            margin="dense"
+            placeholder="Search.."
+            autoFocus={true}
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+        </div>
 
         {auth.loggingIn && (
-          <IconButton onClick={handleClickEdit}>
-            <CreateIcon color="primary" />
+          <IconButton onClick={() => handleClickEdit()}>
+            <AddCircleIcon color="primary" fontSize="large" />
           </IconButton>
         )}
       </div>
-      <GridList data={item} handleClickItem={handleClickItem} />
+      <GridList
+        handleClickEdit={handleClickEdit}
+        handleClickDelete={handleClickDelete}
+        handleClickItem={handleClickItem}
+        getItems={getCodingItems}
+        search={search}
+        refresh={refresh}
+      />
 
       <FullScreenDialog open={detailOpen} handleClose={handleDetailClose}>
         <Container maxWidth="md">

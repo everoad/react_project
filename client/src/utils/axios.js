@@ -28,7 +28,7 @@ async function responseError(error, store) {
   let response = error.response;
   let status = response.status;
   let errorKey = response.data.error;
-  let message = response.data.error_description;
+  //let message = response.data.error_description;
 
   switch (status) {
     case 500:

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
@@ -8,12 +8,9 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import Button from "@material-ui/core/Button";
+import MarkdownEditor from "../../components/markdown/MarkdownEditor";
 
 import * as service from "../../services/data";
-
-import ReactMde from "react-mde";
-import * as Showdown from "showdown";
-import "react-mde/lib/styles/css/react-mde-all.css";
 
 const useStyles = makeStyles(theme => ({
   input: {
@@ -27,13 +24,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const converter = new Showdown.Converter({
-  tables: true,
-  simplifiedAutoLink: true,
-  strikethrough: true,
-  tasklists: true
-});
-
 export default function CodingEditor({
   item,
   handleChangeDesc,
@@ -42,9 +32,7 @@ export default function CodingEditor({
   defaultData
 }) {
   const classes = useStyles();
-  const { type, title, description, imageId } = item;
-
-  const [selectedTab, setSelectedTab] = useState("write");
+  const { id, typeId, title, description, imageId } = item;
 
   const handleChangeFile = async e => {
     const file = e.target.files[0];
@@ -59,13 +47,13 @@ export default function CodingEditor({
       <FormControl variant="outlined" margin="dense">
         <InputLabel htmlFor="textfield-type">분류</InputLabel>
         <Select
-          value={type}
+          value={typeId}
           onChange={handleChange}
           input={
-            <OutlinedInput labelWidth={10} name="type" id="textfield-type" />
+            <OutlinedInput labelWidth={34} name="typeId" id="textfield-type" />
           }
         >
-          <MenuItem value={0} disabled selected>
+          <MenuItem value={0} disabled selected={id < 0}>
             선택
           </MenuItem>
           {defaultData.type.map((one, i) => (
@@ -104,15 +92,7 @@ export default function CodingEditor({
         }}
         className={classes.textField}
       />
-      <ReactMde
-        value={description}
-        onChange={handleChangeDesc}
-        selectedTab={selectedTab}
-        onTabChange={setSelectedTab}
-        generateMarkdownPreview={markdown =>
-          Promise.resolve(converter.makeHtml(markdown))
-        }
-      />
+      <MarkdownEditor value={description} onChange={handleChangeDesc} />
     </div>
   );
 }

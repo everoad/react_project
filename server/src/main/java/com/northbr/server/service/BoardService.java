@@ -7,10 +7,14 @@ import com.northbr.server.vo.SearchVo;
 
 public interface BoardService {
 
-  public BoardListVo getBoardItems(SearchVo searchVo);
+  public BoardListVo getBoardItems(SearchVo searchVo) throws Exception;
 
-  public BoardVo getBoardItem(int boardId);
+  public BoardVo getBoardItem(int boardId) throws Exception;
 
-  public ProcessResult addBoardItem(BoardVo boardVo);
+  public ProcessResult addBoardItem(BoardVo boardVo) throws Exception;
+
+  public ProcessResult removeBoardItem(BoardVo boardVo) throws Exception;
+
+  public ProcessResult editBoardItem(BoardVo boardVo) throws Exception;
 
 }

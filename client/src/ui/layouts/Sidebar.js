@@ -19,7 +19,8 @@ export default function Sidebar({
   handleDrawerClose,
   classes,
   handleActive,
-  sidebarData
+  sidebarData,
+  active
 }) {
   const theme = useTheme();
 
@@ -53,9 +54,10 @@ export default function Sidebar({
         {sidebarData.map((data, index) => (
           <ListItem
             button
-            key={data.text}
+            key={index}
             component={Link}
             to={data.href}
+            selected={active.href === data.href}
             onClick={() => handleActive(data)}
           >
             <ListItemIcon style={{ color: "#fff" }}>{data.icon}</ListItemIcon>

@@ -16,13 +16,12 @@ public class BoardServiceImpl implements BoardService {
 
   private BoardMapper boardMapper;
 
-  public BoardServiceImpl(BoardMapper mapper) {
+  public BoardServiceImpl(BoardMapper mapper) throws Exception {
     boardMapper = mapper;
   }
 
   @Override
-  public BoardListVo getBoardItems(SearchVo searchVo) {
-    System.out.println("SEARCH :: " + searchVo.getType());
+  public BoardListVo getBoardItems(SearchVo searchVo) throws Exception {
     List<BoardVo> items = boardMapper.selectBoardItems(searchVo);
     int itemCount = boardMapper.selectBoardItemsCount(searchVo);
 
@@ -30,14 +29,25 @@ public class BoardServiceImpl implements BoardService {
   }
 
   @Override
-  public BoardVo getBoardItem(int boardId) {
+  public BoardVo getBoardItem(int boardId) throws Exception {
     return boardMapper.selectBoardItem(boardId);
   }
 
   @Override
-  public ProcessResult addBoardItem(BoardVo boardVo) {
-    System.out.println("DATA :: " + boardVo.toString());
+  public ProcessResult addBoardItem(BoardVo boardVo) throws Exception {
     int result = boardMapper.insertBoardItem(boardVo);
+    return new ProcessResult(result > 0 ? ProcessResult.SUCCESS_CODE : ProcessResult.FAIL_CODE);
+  }
+
+  @Override
+  public ProcessResult removeBoardItem(BoardVo boardVo) throws Exception {
+    int result = boardMapper.deleteBoardItem(boardVo);
+    return new ProcessResult(result > 0 ? ProcessResult.SUCCESS_CODE : ProcessResult.FAIL_CODE);
+  }
+
+  @Override
+  public ProcessResult editBoardItem(BoardVo boardVo) throws Exception {
+    int result = boardMapper.updateBoardItem(boardVo);
     return new ProcessResult(result > 0 ? ProcessResult.SUCCESS_CODE : ProcessResult.FAIL_CODE);
   }
 

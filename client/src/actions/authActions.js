@@ -96,9 +96,9 @@ function logout() {
   };
 }
 
-function request(user) {
-  return { type: LOGIN_REQUEST, user };
-}
+// function request(user) {
+//   return { type: LOGIN_REQUEST, user };
+// }
 function success(user) {
   return { type: LOGIN_SUCCESS, user };
 }

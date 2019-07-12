@@ -57,6 +57,7 @@ export default function Layout({ children }) {
         open={open}
         handleDrawerClose={handleDrawerClose}
         classes={classes}
+        active={active}
         handleActive={handleActive}
         sidebarData={sidebarData}
       />
