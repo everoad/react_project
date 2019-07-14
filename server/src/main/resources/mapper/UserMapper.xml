@@ -13,4 +13,15 @@
 		FROM user
 		WHERE user_id = #{username}
 	</select>
+
+  <select id="selectProfile" resultType="Map">
+    SELECT
+      profile
+    FROM profile
+  </select>
+
+  <update id="updateProfile">
+    UPDATE profile
+    SET profile = #{profile}
+  </update>
 </mapper>

@@ -7,14 +7,10 @@ const useStyles = makeStyles(theme => ({
   root: {}
 }));
 
-export default function AboutEditor(props) {
+export default function AboutEditor({ value, onChange }) {
   const classes = useStyles();
 
-  const { discription, onChangeDesc } = props;
-
   return (
-    <div>
-      <MarkdownEditor value={discription} onChange={onChangeDesc} />
-    </div>
+      <MarkdownEditor value={value} onChange={onChange} />
   );
 }

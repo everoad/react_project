@@ -20,13 +20,13 @@ function App({ dispatch }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const initializing = async () => {
+    const init = async () => {
       await dispatch(await dataActions.getDefaultData());
       await dispatch(await authActions.autoLogin());
       setLoading(false);
     };
 
-    initializing();
+    init();
   }, [dispatch]);
 
   return (

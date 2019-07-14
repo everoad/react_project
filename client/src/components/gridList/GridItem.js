@@ -61,6 +61,10 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "space-between",
     padding: theme.spacing(1)
+  },
+  buttons: {
+    display: "flex",
+    alignItems: "center"
   }
 }));
 
@@ -112,7 +116,7 @@ function GridItem(props) {
             </div>
           </div>
           <div className={classes.footer}>
-            <div>
+            <div className={classes.buttons}>
               {auth.loggingIn && (
                 <Fragment>
                   <IconButton
